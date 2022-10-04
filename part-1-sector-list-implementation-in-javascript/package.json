@@ -1,0 +1,14 @@
+{
+  "name": "@jasapienza/part-1-sector-list-implementation-in-javascript",
+  "main": "c8fd4b84acfac69c@1724.js",
+  "version": "1724.0.0",
+  "homepage": "https://observablehq.com/@jasapienza/part-1-sector-list-implementation-in-javascript",
+  "author": {
+    "name": "jasapienza",
+    "url": "https://observablehq.com/@jasapienza"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
