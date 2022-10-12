@@ -1,4 +1,4 @@
-// https://observablehq.com/@jasapienza/part-3-sector-list-experiment-1-map-algebra@2046
+// https://observablehq.com/@jasapienza/part-3-sector-list-experiment-1-map-algebra@2068
 import define1 from "./c8fd4b84acfac69c@1724.js";
 import define2 from "./140f555faa1ea41f@2011.js";
 import define3 from "./a33468b95d0b15b0@808.js";
@@ -31,15 +31,23 @@ function _5(md){return(
 md`**Step 1)** Read GeoJSON data with polygonal map.`
 )}
 
-function _geojson_fert(FileAttachment){return(
-FileAttachment("fertility3@1.json").json()
+function _6(FileAttachment){return(
+FileAttachment("fertility3@1.json").url()
 )}
 
-function _7(cell){return(
+async function _fertJSON(){return(
+JSON.parse(await fetch("https://static.observableusercontent.com/files/55adea6a11e2bbd749fc5fd43b8780170444c7c7e25457090761c585bac7e692e1d64d7a6ec97332356368046d8bf70ed4e2f78ec8de3b9127a7f16393a56f92").then(pr => pr.text()))
+)}
+
+function _geojson_fert(fertJSON){return(
+fertJSON
+)}
+
+function _9(cell){return(
 cell`geojson_fert = FileAttachment("fertility.json").json()`
 )}
 
-function _8(tex,md){return(
+function _10(tex,md){return(
 md`**Step 2)** Define the function ${tex`fertilityToWeight(class) = w`} to map a class to a scalar weight ${tex`w`}.`
 )}
 
@@ -50,14 +58,14 @@ d3.scaleOrdinal(
 )
 )}
 
-function _10(cell){return(
+function _12(cell){return(
 cell`fertilityToWeight = d3.scaleOrdinal(
   ["_", "Poor", "Regular", "Good"],
   [0, 1, 3, 5]
 )`
 )}
 
-function _11(md){return(
+function _13(md){return(
 md`**Step 3)** Convert the data in GeoJSON to a SL representation.`
 )}
 
@@ -67,25 +75,25 @@ geoJsonToSectorList(geojson_fert, 600, (feat) =>
 )
 )}
 
-function _13(cell){return(
+function _15(cell){return(
 cell`SLFertilityRaw = geoJsonToSectorList(geojson_fert, 600, (feat) =>
   fertilityToWeight(feat.properties.class)
 )`
 )}
 
-function _14(md){return(
+function _16(md){return(
 md`**Step 4)** Optionally, we can perform cleaning operations on the converted scalar field, since overlaps between adjacent polygons (i.e. a kind of topological error in a polygonal map) can occur in the input geographic data. Note that we expect to find only values 1, 3, 5 and 0 in the resulting scalar field. We can check whether the converted field conforms to this expectation by calling a special utility function called _scalarValues_, which returns all different scalar values occurring in a field represented by an SL:`
 )}
 
-function _15(scalarValues,SLFertilityRaw){return(
+function _17(scalarValues,SLFertilityRaw){return(
 scalarValues(SLFertilityRaw)
 )}
 
-function _16(cell){return(
+function _18(cell){return(
 cell`scalarValues(SLFertilityRaw)`
 )}
 
-function _17(md){return(
+function _19(md){return(
 md`As seen above, the conversion revealed some inconsistencies in the original data. For instance, overlaps between regions of class poor and regular generated regions in the scalar field mapped to 1 + 3 = 4. This problem can be solved by applying
 a scalar transformation that maps regions with unexpected values to zero:`
 )}
@@ -94,23 +102,23 @@ function _SLFertility(SLFertilityRaw,cleanupMap){return(
 SLFertilityRaw.scalarTransformation(cleanupMap([1, 3, 5]))
 )}
 
-function _19(cell){return(
+function _21(cell){return(
 cell`SLFertility = SLFertilityRaw.scalarTransformation(cleanupMap([1, 3, 5]))`
 )}
 
-function _20(md){return(
+function _22(md){return(
 md`Running the _scalarValues_ function again, we notice that the returned values are as expected:`
 )}
 
-function _21(scalarValues,SLFertility){return(
+function _23(scalarValues,SLFertility){return(
 scalarValues(SLFertility)
 )}
 
-function _22(cell){return(
+function _24(cell){return(
 cell`scalarValues(SLFertility)`
 )}
 
-function _23(md){return(
+function _25(md){return(
 md`**Step 5)** Optionally, we can draw the final SL by calling, say, utility function _fieldRender_. This, in turn, requires a class to color mapping. Here, we use _d3.scaleOrdinal_ to build such a mapping. 
 `
 )}
@@ -124,7 +132,7 @@ d3.scaleOrdinal(fertilityToWeight.range(), [
 ])
 )}
 
-function _25(cell){return(
+function _27(cell){return(
 cell`fertilityColorScale = d3.scaleOrdinal(fertilityToWeight.range(), [
   "#fff",
   "#fee5d9",
@@ -133,23 +141,23 @@ cell`fertilityColorScale = d3.scaleOrdinal(fertilityToWeight.range(), [
 ])`
 )}
 
-function _26(md){return(
+function _28(md){return(
 md`A legend for the mapping can be produced by the Legend utility. Note that we use "poor", "regular" and "good" as labels for the field values, since this is more readable than 1, 3, and 5.`
 )}
 
-function _27(Legend,d3,fertilityToWeight,fertilityColorScale){return(
+function _29(Legend,d3,fertilityToWeight,fertilityColorScale){return(
 Legend(d3.scaleOrdinal(fertilityToWeight.domain(), fertilityColorScale.range()))
 )}
 
-function _28(cell){return(
+function _30(cell){return(
 cell`Legend(d3.scaleOrdinal(fertilityToWeight.domain(), fertilityColorScale.range()))`
 )}
 
-function _29(md){return(
+function _31(md){return(
 md`Finally, we call _fieldRender_, which produces a WebGL rendering of the field by calling methods _convertFrom_ and _findEdges_. The first produces trapezoids that are rendered as two triangles, and the second produces line segments that separate regions mapped to different values. The function also supports a tooltip-generating function, which is useful to inspect the field interactively.`
 )}
 
-function _30(fieldRender,SLFertility,fertilityColorScale,d3,fertilityToWeight){return(
+function _32(fieldRender,SLFertility,fertilityColorScale,d3,fertilityToWeight){return(
 fieldRender(SLFertility, {
   fieldColor: fertilityColorScale,
   tooltipMap: d3.scaleOrdinal(
@@ -162,7 +170,7 @@ fieldRender(SLFertility, {
 })
 )}
 
-function _31(cell){return(
+function _33(cell){return(
 cell`fieldRender(SLFertility, {
   fieldColor: fertilityColorScale,
   tooltipMap: d3.scaleOrdinal(
@@ -175,27 +183,35 @@ cell`fieldRender(SLFertility, {
 })`
 )}
 
-function _32(md){return(
+function _34(md){return(
 md`## Second Criterion - Brazil Relief`
 )}
 
-function _33(md){return(
+function _35(md){return(
 md`The relief map of Brazil defines 4 classes: _depression_, _ridge_, _plateau_ and _lowland_. These are mapped to scalar weights 1, 2, 4 and 5 by the _convertTo_ operation, respectively. Thus, a second SL is produced following the same steps as the previous criterion.`
 )}
 
-function _34(md){return(
+function _36(md){return(
 md`**Step 1) ** Read GeoJSON data with polygonal map.`
 )}
 
-function _geojson_relief(FileAttachment){return(
-FileAttachment("relief3@1.json").json()
+function _37(FileAttachment){return(
+FileAttachment("relief3@1.json").url()
 )}
 
-function _36(cell){return(
+async function _reliefJSON(){return(
+JSON.parse(await fetch("https://static.observableusercontent.com/files/4dc2dae322a42e44b97b46e6b2f39b2d24cfaa1d73c31cabefaba3efb1dae8dfb7bd18e038a2cfa617187d73db996de4285ffaf13e36e9bee67544bacf5ff2d9").then(pr => pr.text()))
+)}
+
+function _geojson_relief(reliefJSON){return(
+reliefJSON
+)}
+
+function _40(cell){return(
 cell`geojson_relief = FileAttachment("relief3@1.json").json();`
 )}
 
-function _37(tex,md){return(
+function _41(tex,md){return(
 md`**Step 2)** Define the function ${tex`reliefToWeight(class) = w`} to map a class to a scalar weight ${tex`w`}.`
 )}
 
@@ -206,14 +222,14 @@ d3.scaleOrdinal(
 )
 )}
 
-function _39(cell){return(
+function _43(cell){return(
 cell`reliefToWeight = d3.scaleOrdinal(
   ["_", "Depression", "Ridge", "Plateau", "Lowland"],
   [0, 1, 3, 4, 5]
 )`
 )}
 
-function _40(md){return(
+function _44(md){return(
 md`**Step 3)** Convert the data in GeoJSON to a SL representation.`
 )}
 
@@ -223,25 +239,25 @@ geoJsonToSectorList(geojson_relief, 600, (feat) =>
 )
 )}
 
-function _42(cell){return(
+function _46(cell){return(
 cell`SLReliefRaw = geoJsonToSectorList(geojson_relief, 600, (feat) =>
   reliefToWeight(feat.properties.class)
 )`
 )}
 
-function _43(md){return(
+function _47(md){return(
 md`**Step 4)** Optionally, we can use _scalarValues_ to check whether the resulting field contains unexpected values, i.e., values other than 0, 1, 2, 4 and 5. `
 )}
 
-function _44(scalarValues,SLReliefRaw){return(
+function _48(scalarValues,SLReliefRaw){return(
 scalarValues(SLReliefRaw)
 )}
 
-function _45(cell){return(
+function _49(cell){return(
 cell`scalarValues(SLReliefRaw)`
 )}
 
-function _46(md){return(
+function _50(md){return(
 md`We notice that, in this case, the scalar values are as expected. So we can define the SLRelief field
 as identical to SLReliefRaw.`
 )}
@@ -250,11 +266,11 @@ function _SLRelief(SLReliefRaw){return(
 SLReliefRaw
 )}
 
-function _48(cell){return(
+function _52(cell){return(
 cell`SLRelief = SLReliefRaw`
 )}
 
-function _49(md){return(
+function _53(md){return(
 md`**Step 5)** Optionally, we draw the final SL.`
 )}
 
@@ -268,7 +284,7 @@ d3.scaleOrdinal(reliefToWeight.domain(), [
 ])
 )}
 
-function _51(cell){return(
+function _55(cell){return(
 cell`reliefColorScale = d3.scaleOrdinal(reliefToWeight.domain(), [
   "#fff",
   "#aaa",
@@ -278,15 +294,15 @@ cell`reliefColorScale = d3.scaleOrdinal(reliefToWeight.domain(), [
 ])`
 )}
 
-function _52(Legend,d3,reliefToWeight,reliefColorScale){return(
+function _56(Legend,d3,reliefToWeight,reliefColorScale){return(
 Legend(d3.scaleOrdinal(reliefToWeight.domain(), reliefColorScale.range()))
 )}
 
-function _53(cell){return(
+function _57(cell){return(
 cell`Legend(d3.scaleOrdinal(reliefToWeight.domain(), reliefColorScale.range()))`
 )}
 
-function _54(fieldRender,SLRelief,reliefColorScale,d3,reliefToWeight){return(
+function _58(fieldRender,SLRelief,reliefColorScale,d3,reliefToWeight){return(
 fieldRender(SLRelief, {
   fieldColor: reliefColorScale,
   tooltipMap: d3.scaleOrdinal(reliefToWeight.range(), reliefToWeight.domain()),
@@ -296,7 +312,7 @@ fieldRender(SLRelief, {
 })
 )}
 
-function _55(cell){return(
+function _59(cell){return(
 cell`fieldRender(SLRelief, {
   fieldColor: reliefColorScale,
   tooltipMap: d3.scaleOrdinal(reliefToWeight.range(), reliefToWeight.domain()),
@@ -306,11 +322,11 @@ cell`fieldRender(SLRelief, {
 })`
 )}
 
-function _56(md){return(
+function _60(md){return(
 md`## Agricultural Potential Result`
 )}
 
-function _57(tex,md){return(
+function _61(tex,md){return(
 md`At this point, we have each criterion represented as a scalar field using SLs. For some types of GIS-MCDA,  the aim is to generate a weighted sum of individual criteria. In our case, we define weighted sum ${tex`S_{agr} = 4 S_{fer}+6 S_{rel}`}, where subscripts ${tex`agr`}, ${tex`fer`}, and ${tex`rel`} denote fields _agricultural potential_, _fertility_ and _relief_, respectively.
 
 Two scalar multiplications and one _add_ operation are required to compute the sector list for ${tex`S_{agr}`}:`
@@ -320,23 +336,23 @@ function _SLWeightedSum(SLFertility,SLRelief){return(
 SLFertility.scalarMultiplication(4).add(SLRelief.scalarMultiplication(6))
 )}
 
-function _59(cell){return(
+function _63(cell){return(
 cell`SLWeightedSum = SLFertility.scalarMultiplication(4).add(SLRelief.scalarMultiplication(6));`
 )}
 
-function _60(md){return(
+function _64(md){return(
 md`Since each input scalar field has values between 0 and 5, the final field can have values between 0 and 50. In this example, the scalar values of the weighted sum are:`
 )}
 
-function _61(scalarValues,SLWeightedSum){return(
+function _65(scalarValues,SLWeightedSum){return(
 scalarValues(SLWeightedSum)
 )}
 
-function _62(cell){return(
+function _66(cell){return(
 cell`scalarValues(SLWeightedSum)`
 )}
 
-function _63(md){return(
+function _67(md){return(
 md`As done before with the criteria, we can draw the final result:`
 )}
 
@@ -344,23 +360,23 @@ function _sumColorScale(d3){return(
 d3.scaleSequential([0,50],d3.interpolateBlues)
 )}
 
-function _65(cell){return(
+function _69(cell){return(
 cell`sumColorScale = d3.scaleSequential([0,50],d3.interpolateBlues);`
 )}
 
-function _66(Legend,sumColorScale){return(
+function _70(Legend,sumColorScale){return(
 Legend(sumColorScale, {
   title: "Agricultural Potential"
 })
 )}
 
-function _67(cell){return(
+function _71(cell){return(
 cell`Legend(sumColorScale, {
   title: "Agricultural Potential"
 })`
 )}
 
-function _68(fieldRender,SLWeightedSum,d3,sumColorScale){return(
+function _72(fieldRender,SLWeightedSum,d3,sumColorScale){return(
 fieldRender(SLWeightedSum, {
   fieldColor: d3.scaleOrdinal(
     d3.range(0, 51),
@@ -374,7 +390,7 @@ fieldRender(SLWeightedSum, {
 })
 )}
 
-function _69(cell){return(
+function _73(cell){return(
 cell`fieldRender(SLWeightedSum, {
   fieldColor: d3.scaleOrdinal(
     d3.range(0, 51),
@@ -389,7 +405,7 @@ cell`fieldRender(SLWeightedSum, {
 `
 )}
 
-function _70(tex,md){return(
+function _74(tex,md){return(
 md`## Agricultural potential classification
 
 As an optional step, we can establish a more coarse-grained classification by establishing thresholds that define areas with *Low*, *Midrange* or *High* potential for agriculture. 
@@ -433,7 +449,7 @@ function _parametersPotential(html)
 }
 
 
-function _72(tex,md){return(
+function _76(tex,md){return(
 md`Thus, a scalar transformation is applied such that its function returns:
 
 ${tex`1`}, if ${tex`w < A`};<br>
@@ -450,14 +466,14 @@ d3.scaleThreshold(
 )
 )}
 
-function _74(cell){return(
+function _78(cell){return(
 cell`potentialClassifier = d3.scaleThreshold(
   [1, ...parametersPotential],
   [0, 1, 2, 3]
 )`
 )}
 
-function _75(md){return(
+function _79(md){return(
 md`A color scale for the classification is defined below.`
 )}
 
@@ -468,14 +484,14 @@ d3.scaleOrdinal(
 )
 )}
 
-function _77(cell){return(
+function _81(cell){return(
 cell`classColorScale = d3.scaleOrdinal(
   ["_", "Low", "Mid", "High"],
   ["#fff", "#fde0dd", "#fa9fb5", "#c51b8a"]
 )`
 )}
 
-function _78(md){return(
+function _82(md){return(
 md`The scale below is used to produce proper labels for our integer class values.`
 )}
 
@@ -483,11 +499,11 @@ function _classWeightColorScale(d3,classColorScale){return(
 d3.scaleOrdinal([0, 1, 2, 3], classColorScale.range())
 )}
 
-function _80(cell){return(
+function _84(cell){return(
 cell`classWeightColorScale = d3.scaleOrdinal([0, 1, 2, 3], classColorScale.range())`
 )}
 
-function _81(md){return(
+function _85(md){return(
 md`Finally we compute the agricultural potential classification using a simple scalar transformation.`
 )}
 
@@ -495,23 +511,23 @@ function _SLClassified(SLWeightedSum,potentialClassifier){return(
 SLWeightedSum.scalarTransformation(potentialClassifier)
 )}
 
-function _83(cell){return(
+function _87(cell){return(
 cell`SLClassified = SLWeightedSum.scalarTransformation(potentialClassifier)`
 )}
 
-function _84(md){return(
+function _88(md){return(
 md`And below we render the classification map.`
 )}
 
-function _85(Legend,classColorScale){return(
+function _89(Legend,classColorScale){return(
 Legend(classColorScale)
 )}
 
-function _86(cell){return(
+function _90(cell){return(
 cell`Legend(classColorScale)`
 )}
 
-function _87(fieldRender,SLClassified,classWeightColorScale,d3,classColorScale){return(
+function _91(fieldRender,SLClassified,classWeightColorScale,d3,classColorScale){return(
 fieldRender(SLClassified, {
   fieldColor: classWeightColorScale,
   showEdges: false,
@@ -522,7 +538,7 @@ fieldRender(SLClassified, {
 })
 )}
 
-function _88(cell){return(
+function _92(cell){return(
 cell`fieldRender(SLClassified, {
   fieldColor: classWeightColorScale,
   showEdges: false,
@@ -533,7 +549,7 @@ cell`fieldRender(SLClassified, {
 })`
 )}
 
-function _89(tex,md){return(
+function _93(tex,md){return(
 md`## Cross product mapping
 
 Rather than creating a classifier based on an algebraic rule, it is possible to directly map all
@@ -544,23 +560,23 @@ function _SLUniqueCombinations(SLFertility,SLRelief){return(
 SLFertility.add(SLRelief.scalarMultiplication(10))
 )}
 
-function _91(cell){return(
+function _95(cell){return(
 cell`SLUniqueCombinations = SLFertility.add(SLRelief.scalarMultiplication(10))`
 )}
 
-function _92(md){return(
+function _96(md){return(
 md`By calling _scalarValues_ for the resulting field, we notice some unexpected values. For instance, the value of 40 corresponds to _fertility_ = 4 and _relief_ = 0. This is due to the fact that the Brazil boundaries of the two maps are not exactly coincident:`
 )}
 
-function _93(scalarValues,SLUniqueCombinations){return(
+function _97(scalarValues,SLUniqueCombinations){return(
 scalarValues(SLUniqueCombinations)
 )}
 
-function _94(cell){return(
+function _98(cell){return(
 cell`scalarValues(SLUniqueCombinations)`
 )}
 
-function _95(md){return(
+function _99(md){return(
 md`The table below allows you to 
 select a different scalar between -7 and 7 to any Fertility/Relief combination. `
 )}
@@ -626,7 +642,7 @@ function _parametersTableMap(reliefToWeight,fertilityToWeight,colorScale,html)
 }
 
 
-function _97(md){return(
+function _101(md){return(
 md`From the table above, we perform a scalar transformation to remap the scalar values into a new sector list:`
 )}
 
@@ -640,7 +656,7 @@ SLUniqueCombinations.scalarTransformation(
 )
 )}
 
-function _99(cell){return(
+function _103(cell){return(
 cell`SLClassifiedCombinations = SLUniqueCombinations.scalarTransformation(
   //(x) => Math.floor(x % 10) // Relief only
   //(x) => Math.floor(x / 10) // Fertility only
@@ -650,23 +666,23 @@ cell`SLClassifiedCombinations = SLUniqueCombinations.scalarTransformation(
 );`
 )}
 
-function _100(md){return(
+function _104(md){return(
 md`Finally, we render the new sector list representing the result:`
 )}
 
-function _101(Legend,colorScale){return(
+function _105(Legend,colorScale){return(
 Legend(colorScale, {
   title: "field value"
 })
 )}
 
-function _102(cell){return(
+function _106(cell){return(
 cell`Legend(colorScale, {
   title: "field value"
 })`
 )}
 
-function _103(fieldRender,SLClassifiedCombinations,colorScale,d3){return(
+function _107(fieldRender,SLClassifiedCombinations,colorScale,d3){return(
 fieldRender(SLClassifiedCombinations, {
   fieldColor: colorScale,
   showEdges: false,
@@ -677,7 +693,7 @@ fieldRender(SLClassifiedCombinations, {
 })
 )}
 
-function _104(cell){return(
+function _108(cell){return(
 cell`fieldRender(SLClassifiedCombinations, {
   fieldColor: colorScale,
   showEdges: false,
@@ -688,27 +704,27 @@ cell`fieldRender(SLClassifiedCombinations, {
 })`
 )}
 
-function _105(md){return(
+function _109(md){return(
 md`## Imports`
 )}
 
-function _107(cell){return(
+function _111(cell){return(
 cell`import { Constants, SectorList } from "@jasapienza/part-1-sector-list-implementation-in-javascript"`
 )}
 
-function _109(cell){return(
+function _113(cell){return(
 cell`import { colorScale, fieldRender } from "140f555faa1ea41f"`
 )}
 
-function _111(cell){return(
+function _115(cell){return(
 cell`import {Legend} from '@d3/color-legend'`
 )}
 
-function _113(cell){return(
+function _117(cell){return(
 cell`import { geoJsonToSectorList, cleanupMap, scalarValues } from "2485e40047ad1798"`
 )}
 
-function _115(cell){return(
+function _119(cell){return(
 cell`import { cell } from "@esperanc/show-code-utility"`
 )}
 
@@ -736,7 +752,7 @@ function(json,prop,weights,bbox) {
 }
 )}
 
-function _117(cell){return(
+function _121(cell){return(
 cell`convertGeoJsonToSL = function(json,prop,weights,bbox) {
     const convertCoords = function(coords,w) {
         if (typeof coords[0][0] != "number") {
@@ -760,6 +776,14 @@ cell`convertGeoJsonToSL = function(json,prop,weights,bbox) {
 }`
 )}
 
+function _fertility31(FileAttachment){return(
+FileAttachment("fertility3@1.json").json()
+)}
+
+function _relief31(FileAttachment){return(
+FileAttachment("relief3@1.json").json()
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -773,128 +797,134 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _3);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["md"], _5);
-  main.variable(observer("geojson_fert")).define("geojson_fert", ["FileAttachment"], _geojson_fert);
-  main.variable(observer()).define(["cell"], _7);
-  main.variable(observer()).define(["tex","md"], _8);
+  main.variable(observer()).define(["FileAttachment"], _6);
+  main.variable(observer("fertJSON")).define("fertJSON", _fertJSON);
+  main.variable(observer("geojson_fert")).define("geojson_fert", ["fertJSON"], _geojson_fert);
+  main.variable(observer()).define(["cell"], _9);
+  main.variable(observer()).define(["tex","md"], _10);
   main.variable(observer("fertilityToWeight")).define("fertilityToWeight", ["d3"], _fertilityToWeight);
-  main.variable(observer()).define(["cell"], _10);
-  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["cell"], _12);
+  main.variable(observer()).define(["md"], _13);
   main.variable(observer("SLFertilityRaw")).define("SLFertilityRaw", ["geoJsonToSectorList","geojson_fert","fertilityToWeight"], _SLFertilityRaw);
-  main.variable(observer()).define(["cell"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["scalarValues","SLFertilityRaw"], _15);
-  main.variable(observer()).define(["cell"], _16);
-  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["cell"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["scalarValues","SLFertilityRaw"], _17);
+  main.variable(observer()).define(["cell"], _18);
+  main.variable(observer()).define(["md"], _19);
   main.variable(observer("SLFertility")).define("SLFertility", ["SLFertilityRaw","cleanupMap"], _SLFertility);
-  main.variable(observer()).define(["cell"], _19);
-  main.variable(observer()).define(["md"], _20);
-  main.variable(observer()).define(["scalarValues","SLFertility"], _21);
-  main.variable(observer()).define(["cell"], _22);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["cell"], _21);
+  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["scalarValues","SLFertility"], _23);
+  main.variable(observer()).define(["cell"], _24);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("fertilityColorScale")).define("fertilityColorScale", ["d3","fertilityToWeight"], _fertilityColorScale);
-  main.variable(observer()).define(["cell"], _25);
-  main.variable(observer()).define(["md"], _26);
-  main.variable(observer()).define(["Legend","d3","fertilityToWeight","fertilityColorScale"], _27);
-  main.variable(observer()).define(["cell"], _28);
-  main.variable(observer()).define(["md"], _29);
-  main.variable(observer()).define(["fieldRender","SLFertility","fertilityColorScale","d3","fertilityToWeight"], _30);
-  main.variable(observer()).define(["cell"], _31);
-  main.variable(observer()).define(["md"], _32);
-  main.variable(observer()).define(["md"], _33);
+  main.variable(observer()).define(["cell"], _27);
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["Legend","d3","fertilityToWeight","fertilityColorScale"], _29);
+  main.variable(observer()).define(["cell"], _30);
+  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["fieldRender","SLFertility","fertilityColorScale","d3","fertilityToWeight"], _32);
+  main.variable(observer()).define(["cell"], _33);
   main.variable(observer()).define(["md"], _34);
-  main.variable(observer("geojson_relief")).define("geojson_relief", ["FileAttachment"], _geojson_relief);
-  main.variable(observer()).define(["cell"], _36);
-  main.variable(observer()).define(["tex","md"], _37);
+  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["md"], _36);
+  main.variable(observer()).define(["FileAttachment"], _37);
+  main.variable(observer("reliefJSON")).define("reliefJSON", _reliefJSON);
+  main.variable(observer("geojson_relief")).define("geojson_relief", ["reliefJSON"], _geojson_relief);
+  main.variable(observer()).define(["cell"], _40);
+  main.variable(observer()).define(["tex","md"], _41);
   main.variable(observer("reliefToWeight")).define("reliefToWeight", ["d3"], _reliefToWeight);
-  main.variable(observer()).define(["cell"], _39);
-  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["cell"], _43);
+  main.variable(observer()).define(["md"], _44);
   main.variable(observer("SLReliefRaw")).define("SLReliefRaw", ["geoJsonToSectorList","geojson_relief","reliefToWeight"], _SLReliefRaw);
-  main.variable(observer()).define(["cell"], _42);
-  main.variable(observer()).define(["md"], _43);
-  main.variable(observer()).define(["scalarValues","SLReliefRaw"], _44);
-  main.variable(observer()).define(["cell"], _45);
-  main.variable(observer()).define(["md"], _46);
+  main.variable(observer()).define(["cell"], _46);
+  main.variable(observer()).define(["md"], _47);
+  main.variable(observer()).define(["scalarValues","SLReliefRaw"], _48);
+  main.variable(observer()).define(["cell"], _49);
+  main.variable(observer()).define(["md"], _50);
   main.variable(observer("SLRelief")).define("SLRelief", ["SLReliefRaw"], _SLRelief);
-  main.variable(observer()).define(["cell"], _48);
-  main.variable(observer()).define(["md"], _49);
+  main.variable(observer()).define(["cell"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("reliefColorScale")).define("reliefColorScale", ["d3","reliefToWeight"], _reliefColorScale);
-  main.variable(observer()).define(["cell"], _51);
-  main.variable(observer()).define(["Legend","d3","reliefToWeight","reliefColorScale"], _52);
-  main.variable(observer()).define(["cell"], _53);
-  main.variable(observer()).define(["fieldRender","SLRelief","reliefColorScale","d3","reliefToWeight"], _54);
   main.variable(observer()).define(["cell"], _55);
-  main.variable(observer()).define(["md"], _56);
-  main.variable(observer()).define(["tex","md"], _57);
-  main.variable(observer("SLWeightedSum")).define("SLWeightedSum", ["SLFertility","SLRelief"], _SLWeightedSum);
+  main.variable(observer()).define(["Legend","d3","reliefToWeight","reliefColorScale"], _56);
+  main.variable(observer()).define(["cell"], _57);
+  main.variable(observer()).define(["fieldRender","SLRelief","reliefColorScale","d3","reliefToWeight"], _58);
   main.variable(observer()).define(["cell"], _59);
   main.variable(observer()).define(["md"], _60);
-  main.variable(observer()).define(["scalarValues","SLWeightedSum"], _61);
-  main.variable(observer()).define(["cell"], _62);
-  main.variable(observer()).define(["md"], _63);
+  main.variable(observer()).define(["tex","md"], _61);
+  main.variable(observer("SLWeightedSum")).define("SLWeightedSum", ["SLFertility","SLRelief"], _SLWeightedSum);
+  main.variable(observer()).define(["cell"], _63);
+  main.variable(observer()).define(["md"], _64);
+  main.variable(observer()).define(["scalarValues","SLWeightedSum"], _65);
+  main.variable(observer()).define(["cell"], _66);
+  main.variable(observer()).define(["md"], _67);
   main.variable(observer("sumColorScale")).define("sumColorScale", ["d3"], _sumColorScale);
-  main.variable(observer()).define(["cell"], _65);
-  main.variable(observer()).define(["Legend","sumColorScale"], _66);
-  main.variable(observer()).define(["cell"], _67);
-  main.variable(observer()).define(["fieldRender","SLWeightedSum","d3","sumColorScale"], _68);
   main.variable(observer()).define(["cell"], _69);
-  main.variable(observer()).define(["tex","md"], _70);
+  main.variable(observer()).define(["Legend","sumColorScale"], _70);
+  main.variable(observer()).define(["cell"], _71);
+  main.variable(observer()).define(["fieldRender","SLWeightedSum","d3","sumColorScale"], _72);
+  main.variable(observer()).define(["cell"], _73);
+  main.variable(observer()).define(["tex","md"], _74);
   main.variable(observer("viewof parametersPotential")).define("viewof parametersPotential", ["html"], _parametersPotential);
   main.variable(observer("parametersPotential")).define("parametersPotential", ["Generators", "viewof parametersPotential"], (G, _) => G.input(_));
-  main.variable(observer()).define(["tex","md"], _72);
+  main.variable(observer()).define(["tex","md"], _76);
   main.variable(observer("potentialClassifier")).define("potentialClassifier", ["d3","parametersPotential"], _potentialClassifier);
-  main.variable(observer()).define(["cell"], _74);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["cell"], _78);
+  main.variable(observer()).define(["md"], _79);
   main.variable(observer("classColorScale")).define("classColorScale", ["d3"], _classColorScale);
-  main.variable(observer()).define(["cell"], _77);
-  main.variable(observer()).define(["md"], _78);
+  main.variable(observer()).define(["cell"], _81);
+  main.variable(observer()).define(["md"], _82);
   main.variable(observer("classWeightColorScale")).define("classWeightColorScale", ["d3","classColorScale"], _classWeightColorScale);
-  main.variable(observer()).define(["cell"], _80);
-  main.variable(observer()).define(["md"], _81);
+  main.variable(observer()).define(["cell"], _84);
+  main.variable(observer()).define(["md"], _85);
   main.variable(observer("SLClassified")).define("SLClassified", ["SLWeightedSum","potentialClassifier"], _SLClassified);
-  main.variable(observer()).define(["cell"], _83);
-  main.variable(observer()).define(["md"], _84);
-  main.variable(observer()).define(["Legend","classColorScale"], _85);
-  main.variable(observer()).define(["cell"], _86);
-  main.variable(observer()).define(["fieldRender","SLClassified","classWeightColorScale","d3","classColorScale"], _87);
-  main.variable(observer()).define(["cell"], _88);
-  main.variable(observer()).define(["tex","md"], _89);
+  main.variable(observer()).define(["cell"], _87);
+  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["Legend","classColorScale"], _89);
+  main.variable(observer()).define(["cell"], _90);
+  main.variable(observer()).define(["fieldRender","SLClassified","classWeightColorScale","d3","classColorScale"], _91);
+  main.variable(observer()).define(["cell"], _92);
+  main.variable(observer()).define(["tex","md"], _93);
   main.variable(observer("SLUniqueCombinations")).define("SLUniqueCombinations", ["SLFertility","SLRelief"], _SLUniqueCombinations);
-  main.variable(observer()).define(["cell"], _91);
-  main.variable(observer()).define(["md"], _92);
-  main.variable(observer()).define(["scalarValues","SLUniqueCombinations"], _93);
-  main.variable(observer()).define(["cell"], _94);
-  main.variable(observer()).define(["md"], _95);
+  main.variable(observer()).define(["cell"], _95);
+  main.variable(observer()).define(["md"], _96);
+  main.variable(observer()).define(["scalarValues","SLUniqueCombinations"], _97);
+  main.variable(observer()).define(["cell"], _98);
+  main.variable(observer()).define(["md"], _99);
   main.variable(observer("viewof parametersTableMap")).define("viewof parametersTableMap", ["reliefToWeight","fertilityToWeight","colorScale","html"], _parametersTableMap);
   main.variable(observer("parametersTableMap")).define("parametersTableMap", ["Generators", "viewof parametersTableMap"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _97);
+  main.variable(observer()).define(["md"], _101);
   main.variable(observer("SLClassifiedCombinations")).define("SLClassifiedCombinations", ["SLUniqueCombinations","parametersTableMap"], _SLClassifiedCombinations);
-  main.variable(observer()).define(["cell"], _99);
-  main.variable(observer()).define(["md"], _100);
-  main.variable(observer()).define(["Legend","colorScale"], _101);
-  main.variable(observer()).define(["cell"], _102);
-  main.variable(observer()).define(["fieldRender","SLClassifiedCombinations","colorScale","d3"], _103);
-  main.variable(observer()).define(["cell"], _104);
-  main.variable(observer()).define(["md"], _105);
+  main.variable(observer()).define(["cell"], _103);
+  main.variable(observer()).define(["md"], _104);
+  main.variable(observer()).define(["Legend","colorScale"], _105);
+  main.variable(observer()).define(["cell"], _106);
+  main.variable(observer()).define(["fieldRender","SLClassifiedCombinations","colorScale","d3"], _107);
+  main.variable(observer()).define(["cell"], _108);
+  main.variable(observer()).define(["md"], _109);
   const child1 = runtime.module(define1);
   main.import("Constants", child1);
   main.import("SectorList", child1);
-  main.variable(observer()).define(["cell"], _107);
+  main.variable(observer()).define(["cell"], _111);
   const child2 = runtime.module(define2);
   main.import("colorScale", child2);
   main.import("fieldRender", child2);
-  main.variable(observer()).define(["cell"], _109);
+  main.variable(observer()).define(["cell"], _113);
   const child3 = runtime.module(define3);
   main.import("Legend", child3);
-  main.variable(observer()).define(["cell"], _111);
+  main.variable(observer()).define(["cell"], _115);
   const child4 = runtime.module(define4);
   main.import("geoJsonToSectorList", child4);
   main.import("cleanupMap", child4);
   main.import("scalarValues", child4);
-  main.variable(observer()).define(["cell"], _113);
+  main.variable(observer()).define(["cell"], _117);
   const child5 = runtime.module(define5);
   main.import("cell", child5);
-  main.variable(observer()).define(["cell"], _115);
+  main.variable(observer()).define(["cell"], _119);
   main.variable(observer("convertGeoJsonToSL")).define("convertGeoJsonToSL", ["SectorList"], _convertGeoJsonToSL);
-  main.variable(observer()).define(["cell"], _117);
+  main.variable(observer()).define(["cell"], _121);
+  main.variable(observer("fertility31")).define("fertility31", ["FileAttachment"], _fertility31);
+  main.variable(observer("relief31")).define("relief31", ["FileAttachment"], _relief31);
   return main;
 }
