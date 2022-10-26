@@ -1,0 +1,14 @@
+{
+  "name": "@jasapienza/part-2-sector-list-examples",
+  "main": "7e0e77ed848d004b@2084.js",
+  "version": "2084.0.0",
+  "homepage": "https://observablehq.com/@jasapienza/part-2-sector-list-examples",
+  "author": {
+    "name": "jasapienza",
+    "url": "https://observablehq.com/@jasapienza"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
