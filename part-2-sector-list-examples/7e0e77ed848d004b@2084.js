@@ -1,5 +1,4 @@
-// https://observablehq.com/@jasapienza/part-2-sector-list-examples@2084
-import define1 from "./c8fd4b84acfac69c@1724.js";
+import define1 from "./c8fd4b84acfac69c@1725.js";
 import define2 from "./0f2fc775435b2814@262.js";
 import define3 from "./a33468b95d0b15b0@808.js";
 import define4 from "./af0382a0466244be@90.js";

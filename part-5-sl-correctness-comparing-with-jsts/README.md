@@ -1,6 +1,6 @@
-# Part 3) Sector List Experiment 1 - Map Algebra
+# Part 5) SL Correctness: comparing with JSTS
 
-https://observablehq.com/@jasapienza/part-3-sector-list-experiment-1-map-algebra@2075
+https://observablehq.com/@jasapienza/part-5-sl-correctness-comparing-with-jsts@581
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,14 +14,14 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/9d6e323b47a6f9a9@2075.tgz?v=3
+npm install https://api.observablehq.com/d/d647036b4f1c6f00@581.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
 
 ~~~js
 import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "@jasapienza/part-3-sector-list-experiment-1-map-algebra";
+import define from "@jasapienza/part-5-sl-correctness-comparing-with-jsts";
 ~~~
 
 To log the value of the cell named “foo”:

@@ -1,0 +1,14 @@
+{
+  "name": "@jasapienza/part-5-sl-correctness-comparing-with-jsts",
+  "main": "d647036b4f1c6f00@581.js",
+  "version": "581.0.0",
+  "homepage": "https://observablehq.com/@jasapienza/part-5-sl-correctness-comparing-with-jsts",
+  "author": {
+    "name": "jasapienza",
+    "url": "https://observablehq.com/@jasapienza"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}

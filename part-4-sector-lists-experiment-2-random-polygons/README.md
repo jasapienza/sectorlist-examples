@@ -1,6 +1,6 @@
 # Part 4) Sector Lists Experiment 2 - Random Polygons
 
-https://observablehq.com/@jasapienza/part-4-sector-lists-experiment-2-random-polygons@392
+https://observablehq.com/@jasapienza/part-4-sector-lists-experiment-2-random-polygons@408
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,8 +13,8 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/5743bb840ff114f8@392.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/d/5743bb840ff114f8@408.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
